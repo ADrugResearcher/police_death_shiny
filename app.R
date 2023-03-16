@@ -369,7 +369,7 @@ server <- function(input, output, session) {
         count(name = "tcount") %>%
         ungroup() %>%
         left_join(pop) %>%
-        mutate(tcount = tcount/Pop*100000) %>%
+        mutate(tcount = (tcount/Pop)*100000) %>%
         select(-Pop) %>%
         complete(Province, Year= seq(2000,2022, by=1)) %>%
         select(Year, Province, tcount)
@@ -380,7 +380,7 @@ server <- function(input, output, session) {
                       "Per 100 000)",
                       sep ="")
       y_lab <- "Per 100 000"
-      
+      y_max <- max(pt$tcount)+ median(pt$tcount)
     } else if(input$var == "Province" & input$radio == "No"){
       pt <- pt %>%
         select(contains(inputs)) %>%
@@ -395,7 +395,7 @@ server <- function(input, output, session) {
       
       title1 <- paste("Police-related deaths from 2000-2022 by ", t_name,
                       sep ="")
-      
+      y_max <- max(pt$tcount)+ median(pt$tcount)
     }else if(input$var != "Province" & input$radio == "Yes"){
       pt <- pt %>%
         select(contains(inputs)) %>%
@@ -406,7 +406,7 @@ server <- function(input, output, session) {
       y_lab <- "Count\n(Per Capita Unavailble)"
       title1 <- paste("Police-related deaths from 2000-2022 by ", last(inputs),
                       sep ="")
-      
+      y_max <- max(pt$tcount)+ median(pt$tcount)
     } else{
       pt <- pt %>%
         select(contains(inputs)) %>%
@@ -414,6 +414,7 @@ server <- function(input, output, session) {
         count(name = "tcount") %>%
         ungroup() 
       
+      y_max <- max(pt$tcount)+ median(pt$tcount)
       y_lab <- "Count"
       
       title1 <- paste("Police-related deaths from 2000-2022 by ", t_name,
@@ -429,7 +430,7 @@ server <- function(input, output, session) {
     ggplot(pt, aes(x =Year, y = tcount,group = val, colour = val))+
       geom_line(linewidth = 2.5) +
       geom_point(size = 4) +
-      scale_y_continuous(expand =c(0,0), limits = c(0,max(pt$tcount)+0.4))+
+      scale_y_continuous(expand =c(0,0), limits = c(0,y_max))+
       scale_colour_manual(name = fill_name,values= my_colors, na.value ="grey50",
                           guide= guide_legend(order = 2, 
                                        nrow = 7,
