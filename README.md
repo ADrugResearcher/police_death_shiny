@@ -5,7 +5,7 @@ Packages used:
 
  [1] "shiny"        
  [2] "shinythemes"  
- [3] "RColorBrewer" 
+ [3] "RColorBrewer"  
  [4] "lubridate"    
  [5] "forcats"      
  [6] "stringr"      
